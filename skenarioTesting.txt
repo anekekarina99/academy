@@ -1,0 +1,13 @@
+Skenario Testing
+
+1. MovieViewModel : Memastikan academyrepository terpanggil,data Movie tidak kosong,dan memastikan jumlah data sesuai dengan jumlah di API
+2. TvViewModel :Memastikan academyrepository terpanggil,data Tv tidak kosong,dan memastikan jumlah data sesuai dengan jumlah di API
+3. DetailMovieViewModel : Memastikan academyrepository terpanggil,data Movie tidak kosong(id),dan tampil sesuai dgn id
+4. DetailTvViewModel : Memastikan academyrepository terpanggil,data Tv tidak kosong(id),dan tampil sesuai dgn id
+5. AcademyRepository : 
+Memastikan RemoteDataSource terpanggil, data tidak null(baik movie,tv,movie detail, dan tv detail), dan data tampil sesuai dengan data API yg dipilih (berdasarkan id)
+
+Instrument Testing
+Memastikan recyclerViewMovie(untuk movie) dalam keadaan tampil sesuai
+Memindahkan/gulir ke recyclerViewTv(untuk tv) dalam keadaan tampil sesuai
+Mengecek apakah tiap komponen pada recyler view baik Tv dan Movie bisa diklik dan tampil
