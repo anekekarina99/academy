@@ -1,4 +1,4 @@
-
+@file:Suppress("DEPRECATION")
 
 package com.dicoding.motive.data
 
@@ -23,11 +23,11 @@ interface AcademyDataSource {
 
     fun getFavorMovie() : LiveData<PagedList<MovieEntity>>
 
-    fun getMoviePopular(): LiveData<Resource<List<MovieEntity>>>
+    fun getMoviePopular(): LiveData<Resource<PagedList<MovieEntity>>>
 
     fun getMovieDetail(id : Int): LiveData<Resource<MovieEntity>>
 
-    fun getTvPopular(): LiveData<Resource<List<TvEntity>>>
+    fun getTvPopular(): LiveData<Resource<PagedList<TvEntity>>>
 
     fun getTvDetail(id : Int): LiveData<Resource<TvEntity>>
 

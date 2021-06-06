@@ -38,14 +38,20 @@ class AcademyRepository private constructor(
             }
     }
 
-    override fun getMoviePopular(): LiveData<Resource<List<MovieEntity>>> {
+    override fun getMoviePopular(): LiveData<Resource<PagedList<MovieEntity>>> {
 
         return object :
-            NetworkBoundResource<List<MovieEntity>, List<DetailMovieResponse>>(appExecutors) {
-            public override fun loadFromDB(): LiveData<List<MovieEntity>> =
-                localDataSource.getMovieAll()
+            NetworkBoundResource<PagedList<MovieEntity>, List<DetailMovieResponse>>(appExecutors) {
+            public override fun loadFromDB(): LiveData<PagedList<MovieEntity>> {
+                val config = PagedList.Config.Builder()
+                    .setEnablePlaceholders(false)
+                    .setInitialLoadSizeHint(4)
+                    .setPageSize(10)
+                    .build()
+                return LivePagedListBuilder(localDataSource.getMovieAll(), config).build()
+            }
 
-            override fun shouldFetch(result: List<MovieEntity>?): Boolean =
+            override fun shouldFetch(result: PagedList<MovieEntity>?): Boolean =
                 result == null || result.isEmpty()
 
             public override fun createCall(): LiveData<ApiResponse<List<DetailMovieResponse>>> =
@@ -93,13 +99,19 @@ class AcademyRepository private constructor(
         }.asLiveData()
     }
 
-    override fun getTvPopular(): LiveData<Resource<List<TvEntity>>> {
+    override fun getTvPopular(): LiveData<Resource<PagedList<TvEntity>>> {
 
-        return object : NetworkBoundResource<List<TvEntity>, List<DetailTvResponse>>(appExecutors) {
-            public override fun loadFromDB(): LiveData<List<TvEntity>> =
-                localDataSource.getTvAll()
+        return object : NetworkBoundResource<PagedList<TvEntity>, List<DetailTvResponse>>(appExecutors) {
+            public override fun loadFromDB(): LiveData<PagedList<TvEntity>> {
+            val config = PagedList.Config.Builder()
+                .setEnablePlaceholders(false)
+                .setInitialLoadSizeHint(4)
+                .setPageSize(10)
+                .build()
+            return LivePagedListBuilder(localDataSource.getTvAll(), config).build()
+            }
 
-            override fun shouldFetch(result: List<TvEntity>?): Boolean =
+            override fun shouldFetch(result: PagedList<TvEntity>?): Boolean =
                 result == null || result.isEmpty()
 
             public override fun createCall(): LiveData<ApiResponse<List<DetailTvResponse>>> =
@@ -157,19 +169,19 @@ class AcademyRepository private constructor(
 
     override fun insertM(movie: List<MovieEntity>) {
         val runnable = {
-            if (localDataSource.getMovieAll().value.isNullOrEmpty()){
-                localDataSource.insertMovie(movie)
-            }
+            localDataSource.insertMovie(movie)
         }
         appExecutors.diskIO().execute(runnable)
     }
 
     override fun getFavorMovie(): LiveData<PagedList<MovieEntity>> {
+
         val config = PagedList.Config.Builder()
             .setEnablePlaceholders(false)
             .setInitialLoadSizeHint(4)
             .setPageSize(10)
             .build()
+
         return LivePagedListBuilder(localDataSource.getMovieFavorite(), config).build()
     }
 
@@ -181,9 +193,7 @@ class AcademyRepository private constructor(
 
     override fun insertT(t: List<TvEntity>) {
         val runnable = {
-            if (localDataSource.getTvAll().value.isNullOrEmpty()){
-                localDataSource.insertTv(t)
-            }
+            localDataSource.insertTv(t)
         }
         appExecutors.diskIO().execute(runnable)
     }

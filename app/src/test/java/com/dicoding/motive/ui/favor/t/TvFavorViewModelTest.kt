@@ -20,6 +20,8 @@ import org.mockito.junit.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner::class)
 class TvFavorViewModelTest {
 
+    private lateinit var viewModel: TvFavorViewModel
+
     @get:Rule
     var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
@@ -32,7 +34,7 @@ class TvFavorViewModelTest {
     @Mock
     private var acdRepository = Mockito.mock(AcademyRepository::class.java)
 
-    private lateinit var viewModel: TvFavorViewModel
+
 
     @Before
     fun setUp() {

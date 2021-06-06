@@ -12,6 +12,7 @@ import com.dicoding.motive.R
 import com.dicoding.motive.data.source.local.entity.TvEntity
 import com.dicoding.motive.databinding.ItemsTvFavoriteBinding
 import com.dicoding.motive.ui.detail.DetailTvActivity
+import com.dicoding.motive.utils.Constant
 
 class TvFavorAdapter (private val callback :TvFavorFragmentCallback ):
     PagedListAdapter<TvEntity, TvFavorAdapter.ViewHolder>(DIFF_CALLBACK) {
@@ -55,7 +56,7 @@ class TvFavorAdapter (private val callback :TvFavorFragmentCallback ):
                 }
                 imgShare.setOnClickListener { callback.onShareClick(course) }
                 Glide.with(itemView.context)
-                    .load(course.posterPath)
+                    .load(Constant.POSTER_BASE_URL+course.posterPath)
                     .apply(
                         RequestOptions.placeholderOf(R.drawable.ic_loading)
                             .error(R.drawable.ic_error)

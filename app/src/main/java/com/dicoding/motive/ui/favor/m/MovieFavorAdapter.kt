@@ -12,6 +12,7 @@ import com.dicoding.motive.R
 import com.dicoding.motive.data.source.local.entity.MovieEntity
 import com.dicoding.motive.databinding.ItemsMovieFavoriteBinding
 import com.dicoding.motive.ui.detail.DetailMovieActivity
+import com.dicoding.motive.utils.Constant
 
 class MovieFavorAdapter(private val callback: MovieFavorFragmentCallback) :
     PagedListAdapter<MovieEntity, MovieFavorAdapter.ViewHolder>(DIFF_CALLBACK) {
@@ -56,7 +57,7 @@ class MovieFavorAdapter(private val callback: MovieFavorFragmentCallback) :
 
                 imgShare.setOnClickListener { callback.onShareClick(course) }
                 Glide.with(itemView.context)
-                    .load(course.posterPath)
+                    .load(Constant.POSTER_BASE_URL+course.posterPath)
                     .apply(
                         RequestOptions.placeholderOf(R.drawable.ic_loading)
                             .error(R.drawable.ic_error)

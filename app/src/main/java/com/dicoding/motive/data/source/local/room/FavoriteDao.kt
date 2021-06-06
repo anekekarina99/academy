@@ -12,10 +12,10 @@ import com.dicoding.motive.data.source.local.entity.TvEntity
 interface FavoriteDao {
 
     @Query("SELECT * FROM tb_moviefav")
-    fun getMovie(): LiveData<List<MovieEntity>>
+    fun getMovie():DataSource.Factory<Int, MovieEntity>
 
     @Query("SELECT * FROM tb_tvfav")
-    fun getTv(): LiveData<List<TvEntity>>
+    fun getTv(): DataSource.Factory<Int, TvEntity>
 
     @Query("SELECT * FROM tb_moviefav where isFavorite = 1")
     fun getMovieFavorite():DataSource.Factory<Int, MovieEntity>

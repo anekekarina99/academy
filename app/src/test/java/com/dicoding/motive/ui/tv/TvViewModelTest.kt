@@ -3,12 +3,11 @@ package com.dicoding.motive.ui.tv
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.paging.PagedList
 import com.dicoding.motive.data.AcademyRepository
 import com.dicoding.motive.data.source.local.entity.TvEntity
-import com.dicoding.motive.utils.DataDummy
 import com.dicoding.motive.vo.Resource
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
+import junit.framework.TestCase
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -29,7 +28,10 @@ class TvViewModelTest {
     private lateinit var academyRepository: AcademyRepository
 
     @Mock
-    private lateinit var observer: Observer<Resource<List<TvEntity>>>
+    private lateinit var observer: Observer<Resource<PagedList<TvEntity>>>
+
+    @Mock
+    private lateinit var pagedList: PagedList<TvEntity>
 
     @Before
     fun setUp() {
@@ -38,17 +40,18 @@ class TvViewModelTest {
 
     @Test
     fun getTv() {
-        val dummyTv = Resource.success(DataDummy.generateDummyTv())
-        val courses = MutableLiveData<Resource<List<TvEntity>>>()
-        courses.value = dummyTv
+        val dummyCourses = Resource.success(pagedList)
+        `when`(dummyCourses.data?.size).thenReturn(10)
+        val courses = MutableLiveData<Resource<PagedList<TvEntity>>>()
+        courses.value = dummyCourses
 
         `when`(academyRepository.getTvPopular()).thenReturn(courses)
         val courseEntities = viewModel.getTv().value?.data
         verify(academyRepository).getTvPopular()
-        assertNotNull(courseEntities)
-        assertEquals(dummyTv.data?.size, courseEntities?.size)
+        TestCase.assertNotNull(courseEntities)
+        TestCase.assertEquals(10, courseEntities?.size)
 
         viewModel.getTv().observeForever(observer)
-        verify(observer).onChanged(dummyTv)
+        verify(observer).onChanged(dummyCourses)
     }
 }

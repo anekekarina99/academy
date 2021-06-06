@@ -33,7 +33,7 @@ class TvFragment : Fragment(), TvFragmentCallback {
             val factory = ViewModelFactory.getInstance(requireActivity())
             val viewModel = ViewModelProvider(this, factory)[TvViewModel::class.java]
 
-            val adapter = TvAdapter(this)
+            val adapter = TvAdapter()
 
             fragmentTvBinding.progressBar.visibility = View.VISIBLE
             viewModel.getTv().observe(viewLifecycleOwner, {
@@ -42,8 +42,8 @@ class TvFragment : Fragment(), TvFragmentCallback {
                         Status.LOADING -> fragmentTvBinding.progressBar.visibility = View.VISIBLE
                         Status.SUCCESS -> {
                             fragmentTvBinding.progressBar.visibility = View.GONE
-                            it.data?.let { C->
-                                adapter.setCourses(C)
+                            adapter.submitList(it.data)
+                            it.data?.let {
                                 adapter.notifyDataSetChanged()
                                 fragmentTvBinding.rvBookmark.visibility = View.VISIBLE
                             }

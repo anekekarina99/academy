@@ -21,59 +21,20 @@ class FakeAcademyRepository(
     private val appExecutors: AppExecutors
 ) : AcademyDataSource {
 
-    override fun setFavoriteT(tv: TvEntity, favorite: Boolean) {
-        appExecutors.diskIO().execute {
-            localDataSource.setTv(tv, favorite)
-        }
-    }
+    override fun getMoviePopular(): LiveData<Resource<PagedList<MovieEntity>>> {
 
-    override fun insertT(t: List<TvEntity>) {
-        val runnable = {
-            if (localDataSource.getTvAll().value.isNullOrEmpty()) {
-                localDataSource.insertTv(t)
-            }
-        }
-        appExecutors.diskIO().execute(runnable)
-    }
-
-    override fun getFavorTv(): LiveData<PagedList<TvEntity>> {
-        val config = PagedList.Config.Builder()
-            .setEnablePlaceholders(false)
-            .setInitialLoadSizeHint(4)
-            .setPageSize(10)
-            .build()
-        return LivePagedListBuilder(localDataSource.getTvFavorite(), config).build()
-    }
-
-    override fun setFavoriteM(movie: MovieEntity, favorite: Boolean) {
-        appExecutors.diskIO().execute { localDataSource.setMovie(movie, favorite) }
-    }
-
-    override fun insertM(movie: List<MovieEntity>) {
-        val runnable = {
-            if (localDataSource.getMovieAll().value.isNullOrEmpty()) {
-                localDataSource.insertMovie(movie)
-            }
-        }
-        appExecutors.diskIO().execute(runnable)
-    }
-
-    override fun getFavorMovie(): LiveData<PagedList<MovieEntity>> {
-        val config = PagedList.Config.Builder()
-            .setEnablePlaceholders(false)
-            .setInitialLoadSizeHint(4)
-            .setPageSize(10)
-            .build()
-        return LivePagedListBuilder(localDataSource.getMovieFavorite(), config).build()
-    }
-
-    override fun getMoviePopular(): LiveData<Resource<List<MovieEntity>>> {
         return object :
-            NetworkBoundResource<List<MovieEntity>, List<DetailMovieResponse>>(appExecutors) {
-            public override fun loadFromDB(): LiveData<List<MovieEntity>> =
-                localDataSource.getMovieAll()
+            NetworkBoundResource<PagedList<MovieEntity>, List<DetailMovieResponse>>(appExecutors) {
+            public override fun loadFromDB(): LiveData<PagedList<MovieEntity>> {
+                val config = PagedList.Config.Builder()
+                    .setEnablePlaceholders(false)
+                    .setInitialLoadSizeHint(4)
+                    .setPageSize(10)
+                    .build()
+                return LivePagedListBuilder(localDataSource.getMovieAll(), config).build()
+            }
 
-            override fun shouldFetch(result: List<MovieEntity>?): Boolean =
+            override fun shouldFetch(result: PagedList<MovieEntity>?): Boolean =
                 result == null || result.isEmpty()
 
             public override fun createCall(): LiveData<ApiResponse<List<DetailMovieResponse>>> =
@@ -100,6 +61,7 @@ class FakeAcademyRepository(
 
     }
 
+
     override fun getMovieDetail(id: Int): LiveData<Resource<MovieEntity>> {
         return object : NetworkBoundResource<MovieEntity, DetailMovieResponse>(appExecutors) {
             override fun loadFromDB(): LiveData<MovieEntity> {
@@ -120,12 +82,20 @@ class FakeAcademyRepository(
         }.asLiveData()
     }
 
-    override fun getTvPopular(): LiveData<Resource<List<TvEntity>>> {
-        return object : NetworkBoundResource<List<TvEntity>, List<DetailTvResponse>>(appExecutors) {
-            public override fun loadFromDB(): LiveData<List<TvEntity>> =
-                localDataSource.getTvAll()
+    override fun getTvPopular(): LiveData<Resource<PagedList<TvEntity>>> {
 
-            override fun shouldFetch(result: List<TvEntity>?): Boolean =
+        return object :
+            NetworkBoundResource<PagedList<TvEntity>, List<DetailTvResponse>>(appExecutors) {
+            public override fun loadFromDB(): LiveData<PagedList<TvEntity>> {
+                val config = PagedList.Config.Builder()
+                    .setEnablePlaceholders(false)
+                    .setInitialLoadSizeHint(4)
+                    .setPageSize(10)
+                    .build()
+                return LivePagedListBuilder(localDataSource.getTvAll(), config).build()
+            }
+
+            override fun shouldFetch(result: PagedList<TvEntity>?): Boolean =
                 result == null || result.isEmpty()
 
             public override fun createCall(): LiveData<ApiResponse<List<DetailTvResponse>>> =
@@ -171,6 +141,58 @@ class FakeAcademyRepository(
 
         }.asLiveData()
 
+    }
+
+    fun setMovie(m: MovieEntity, favorite: Boolean) {
+        appExecutors.diskIO().execute { localDataSource.setMovie(m, favorite) }
+    }
+
+    fun setTv(t: TvEntity, favorite: Boolean) {
+        appExecutors.diskIO().execute { localDataSource.setTv(t, favorite) }
+    }
+
+    override fun insertM(movie: List<MovieEntity>) {
+        val runnable = {
+            localDataSource.insertMovie(movie)
+        }
+        appExecutors.diskIO().execute(runnable)
+    }
+
+    override fun getFavorMovie(): LiveData<PagedList<MovieEntity>> {
+
+        val config = PagedList.Config.Builder()
+            .setEnablePlaceholders(false)
+            .setInitialLoadSizeHint(4)
+            .setPageSize(10)
+            .build()
+
+        return LivePagedListBuilder(localDataSource.getMovieFavorite(), config).build()
+    }
+
+    override fun setFavoriteT(tv: TvEntity, favorite: Boolean) {
+        appExecutors.diskIO().execute {
+            localDataSource.setTv(tv, favorite)
+        }
+    }
+
+    override fun insertT(t: List<TvEntity>) {
+        val runnable = {
+            localDataSource.insertTv(t)
+        }
+        appExecutors.diskIO().execute(runnable)
+    }
+
+    override fun getFavorTv(): LiveData<PagedList<TvEntity>> {
+        val config = PagedList.Config.Builder()
+            .setEnablePlaceholders(false)
+            .setInitialLoadSizeHint(4)
+            .setPageSize(10)
+            .build()
+        return LivePagedListBuilder(localDataSource.getTvFavorite(), config).build()
+    }
+
+    override fun setFavoriteM(movie: MovieEntity, favorite: Boolean) {
+        appExecutors.diskIO().execute { localDataSource.setMovie(movie, favorite) }
     }
 
 

@@ -7,7 +7,7 @@ import com.dicoding.motive.data.AcademyRepository
 import com.dicoding.motive.data.source.local.entity.TvEntity
 import com.dicoding.motive.utils.DataDummy
 import com.dicoding.motive.vo.Resource
-import com.nhaarman.mockitokotlin2.verify
+import junit.framework.TestCase.assertEquals
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -15,6 +15,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
@@ -63,10 +64,15 @@ class DetailTvViewModelTest {
         m.value = dummyMf
 
         Mockito.`when`(academyRepository.getTvDetail(tId)).thenReturn(m)
+        viewModel.setTv()
+
         viewModel.getTvDetail.observeForever(tvObserver)
         verify(tvObserver).onChanged(m.value)
-        viewModel.setTv()
-        verify(academyRepository).setFavoriteT(m.value?.data as TvEntity, true)
+
+        val expectedValue = m.value
+        val actualValue = viewModel.getTvDetail.value
+
+        assertEquals(expectedValue, actualValue)
     }
 
 

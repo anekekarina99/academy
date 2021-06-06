@@ -39,8 +39,8 @@ class MovieFragment : Fragment() {
                         Status.LOADING -> fragmentMovieBinding.progressBar.visibility = View.VISIBLE
                         Status.SUCCESS -> {
                             fragmentMovieBinding.progressBar.visibility = View.GONE
+                            movieAdapter.submitList(it.data)
                             it.data?.let { C->
-                                movieAdapter.setCourses(C)
                                 movieAdapter.notifyDataSetChanged()
                                 fragmentMovieBinding.rvMovie.visibility = View.VISIBLE
                             }

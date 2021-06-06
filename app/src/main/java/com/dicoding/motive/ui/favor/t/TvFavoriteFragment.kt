@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.dicoding.motive.ui.favor.t
 
 import android.os.Bundle
@@ -16,7 +18,7 @@ import com.dicoding.motive.databinding.FragmentTvFavorBinding
 import com.dicoding.motive.viewmodel.ViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 
-@Suppress("DEPRECATION")
+
 class TvFavoriteFragment : Fragment(), TvFavorFragmentCallback {
 
     private var _fragmentBookmarkBinding: FragmentTvFavorBinding? = null

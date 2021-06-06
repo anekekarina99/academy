@@ -7,7 +7,7 @@ import com.dicoding.motive.data.AcademyRepository
 import com.dicoding.motive.data.source.local.entity.MovieEntity
 import com.dicoding.motive.utils.DataDummy
 import com.dicoding.motive.vo.Resource
-import com.nhaarman.mockitokotlin2.verify
+import junit.framework.TestCase
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -15,7 +15,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.Mockito.`when`
+import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
@@ -63,11 +63,16 @@ class DetailViewModelTest {
         val m = MutableLiveData<Resource<MovieEntity>>()
         m.value = dummyMf
 
-      `when`(academyRepository.getMovieDetail(tId)).thenReturn(m)
+        Mockito.`when`(academyRepository.getMovieDetail(tId)).thenReturn(m)
+        viewModel.setMovie()
+
         viewModel.getMovieDetail.observeForever(tvObserver)
         verify(tvObserver).onChanged(m.value)
-        viewModel.setMovie()
-        verify(academyRepository).setFavoriteM(m.value?.data as MovieEntity, true)
+
+        val expectedValue = m.value
+        val actualValue = viewModel.getMovieDetail.value
+
+        TestCase.assertEquals(expectedValue, actualValue)
     }
 
 }
